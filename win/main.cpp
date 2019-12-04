@@ -123,8 +123,8 @@ void Vsort(vector<int> * p1, int n)
 		(*p1)[minP] = buf;
 	}
 }
-/*
-void qsort(int* p1, int s)
+
+/*void qsort(int* p1, int s)
 {
 	if (s > 1)
 	{
@@ -174,12 +174,13 @@ void qsort(int* p1, int s)
 
 	}
 
-}
-*/
+}*/
+
 void qsort(int* p1, int s)
 {
 	if (s > 1)
 	{
+    
 		int m = p1[s / 2];
 		//cout << m << " ";
 		int* a = p1;
@@ -194,52 +195,52 @@ void qsort(int* p1, int s)
 			{
 				//a[ac] = p1[i];
 				ac++;
-				//cout << "A ";
+				cout << "A ";
 			}
 			else if (p1[i] > m)
 			{
 				//b[bc] = p1[i];
 				bc++;
-				//cout << "B ";
+				cout << "B ";
 			}
 			else
 			{
 				//c[cc] = p1[i];
 				cc++;
-				//cout << "C ";
+				cout << "C ";
 			}
 		}
-    int ccc=1; 
+     
     b=p1+ac+cc;
-		for (int i = 0; i < s; i++)
+		for (int i = 0; i < ac+cc; i++)
 		{
-			if(p1[i]<=m)
-				a[ac++]=p1[i];
-			else
+			if(p1[i]>m)
 			{
-				if(p1[i]>m && i<ac+cc)
-				{
-					for(int j=s;j>0;j--)
-					{
-						if(p1[j]<=m)
-						{
-							swap(p1[i],p1[j]);
-              ac++;
-						}
-					}
-				}
+				for(int j=s;j>ac+cc-1;j--)
+        {
+          if(p1[j]<=m)
+          {
+            swap(p1[i],p1[j]);
+          }
+        }
 			}
 		}
-    for(int i = 0;i<ac+cc;i++)
+    for(int i = 0;i<ac;i++)
     {
       if(p1[i]==m)
       {
-        swap(p1[i],p1[ac+cc-ccc]);
-        ccc--;
+				
+				for(int j=ac+cc-1;j>0;j--)
+        {
+          if(p1[j]<m)
+          {
+            swap(p1[i],p1[j]);
+          }
+        }
       }
     }
 
-		//cout << endl;
+		cout << endl;
 		if (ac > 1)
 			qsort(a, ac);
 		if (bc > 1)
@@ -262,23 +263,19 @@ inline int pr(int x)
 	}
 }
 
+
+void siftUp(vector<int> & p, int s,int c)
+{
+	for(int i=c;p[pr(i)]<p[i];i=pr(i))
+		swap(p[i],p[pr(i)]);
+}
 void Hsort(vector<int> & p, int s)
 {
 	if(s>1)
 	{
 		bool f = true;
-		while (f)
-		{
-			f=false;
-			for (int i = s-1; i > 0; i--)
-			{
-				if (p[pr(i)] < p[i])
-				{
-					f = true;
-					swap(p[pr(i)], p[i]);
-				}
-			}
-		}
+		for(int i=0;i<s;i++)
+			siftUp(p,s,i);
 		swap(p[s - 1], p[0]);
 		Hsort(p, s - 1);
     }
