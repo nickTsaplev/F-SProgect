@@ -56,36 +56,36 @@ int place(vector<int> & a, int tf, int rd)
 
 }
 
-void Bsort(vector<int> * p2)
+void Bsort(vector<int> & p2)
 {
 
 	for (int h = 0; h < 2; h++)
 	{
-		for (int i = 1; i < n; i++)
+		for (int i = 1; i < p2.size(); i++)
 		{
-			int buf = (*p2)[i];
-			int buf2 = place(*p2, buf, i);
+			int buf = p2[i];
+			int buf2 = place(p2, buf, i);
 			for (int j = i - 1; j >= buf2; j--)
-				(*p2)[j + 1] = (*p2)[j];
-			(*p2)[buf2] = buf;
+				p2[j + 1] = p2[j];
+			p2[buf2] = buf;
 		}
 	}
 
 }
 
-void Shsort(vector<int> * p2, int k)
+void Shsort(vector<int> & p2, int k)
 {
 	for (int h = n - 1; h > 0; h = h / k)
 	{
 		for (int h = 0; h < 2; h++)
 		{
-			for (int i = 1; i < n; i++)
+			for (int i = 1; i < p2.size(); i++)
 			{
-				int buf = (*p2)[i];
-				int buf2 = place(*p2, buf, i);
+				int buf = p2[i];
+				int buf2 = place(p2, buf, i);
 				for (int j = i - 1; j >= buf2; j-=k)
-					(*p2)[j + 1] = (*p2)[j];
-				(*p2)[buf2] = buf;
+					p2[j + 1] = p2[j];
+				p2[buf2] = buf;
 			}
 		}
 	}
@@ -97,7 +97,7 @@ int minSearch(vector<int> & p2)
 {
 	int min = p2[0];
 	int minpos = 0;
-	for (int i = 0; i < n; i++)
+	for (int i = 0; i < p2.size(); i++)
 		if (p2[i] < min) {
 			min = p2[i];
 			minpos = i;
@@ -106,21 +106,21 @@ int minSearch(vector<int> & p2)
 }
 
 // select sort
-void Vsort(vector<int> * p1, int n)
+void Vsort(vector<int> & p1, int n)
 {
 
-	for (int i = 0; i < n - 1; i++)
+	for (int i = 0; i < p1.size() - 1; i++)
 	{
 		int minP = i;
-		for (int j = i; j < n; j++)
+		for (int j = i; j < p1.size(); j++)
 		{
-			if ((*p1)[j] < (*p1)[minP])
+			if (p1[j] < p1[minP])
 				minP = j;
 		}
 		int buf;
-		buf = (*p1)[i];
-		(*p1)[i] = (*p1)[minP];
-		(*p1)[minP] = buf;
+		buf = p1[i];
+		p1[i] = p1[minP];
+		p1[minP] = buf;
 	}
 }
 
@@ -195,19 +195,19 @@ void qsort(int* p1, int s)
 			{
 				//a[ac] = p1[i];
 				ac++;
-				cout << "A ";
+				//cout << "A ";
 			}
 			else if (p1[i] > m)
 			{
 				//b[bc] = p1[i];
 				bc++;
-				cout << "B ";
+				//cout << "B ";
 			}
 			else
 			{
 				//c[cc] = p1[i];
 				cc++;
-				cout << "C ";
+				//cout << "C ";
 			}
 		}
      
@@ -240,7 +240,7 @@ void qsort(int* p1, int s)
       }
     }
 
-		cout << endl;
+		//cout << endl;
 		if (ac > 1)
 			qsort(a, ac);
 		if (bc > 1)
@@ -264,20 +264,49 @@ inline int pr(int x)
 }
 
 
-void siftUp(vector<int> & p, int s,int c)
+inline void siftUp(vector<int> & p, int s,int c)
 {
+	//int b=p[c];
+	//int i=0;
 	for(int i=c;p[pr(i)]<p[i];i=pr(i))
 		swap(p[i],p[pr(i)]);
+	//p[i]=b;
+}
+void siftDown(vector<int> & p,int s,int c)
+{
+	
+			if(((c*2)<p.size() && p[c]<p[c*2]) || ((c*2+1)<p.size() && p[c]<p[c*2+1]))
+			{
+				if((c*2)<p.size() && max(p[c*2+1],p[c*2])==p[c*2])
+				{			
+					swap(p[c],p[c*2]);
+					siftDown(p,s,c*2);
+				}
+				else
+				if((c*2+1)<p.size() && max(p[c*2+1],p[c*2])==p[c*2+1])
+				{			
+					swap(p[c],p[i*2+1]);
+					siftDown(p,s,c*2+1);
+				}
+			}
+	
+}
+
+
+
+inline void Hbuild(vector<int> & p,int s)
+{
+	for(int i=0;i<s;i++)
+		siftUp(p,s,i);
 }
 void Hsort(vector<int> & p, int s)
 {
-	if(s>1)
+	Hbuild(p,s);
+	for(int i=s;i>1;i--)
 	{
-		bool f = true;
-		for(int i=0;i<s;i++)
-			siftUp(p,s,i);
-		swap(p[s - 1], p[0]);
-		Hsort(p, s - 1);
+        
+		swap(p[i - 1], p[0]);
+		siftDown(p,i,0);
     }
 }
 
@@ -400,7 +429,7 @@ int main()
 					r = 0;
 					start_time = Clock::now();
 
-					wood_sort(&in);
+					wood_sort(in);
 					Co();
 
 					stop_time = Clock::now();
@@ -417,7 +446,7 @@ int main()
 							in[j] = (rand() % maxm);
 					r = 0;
 					start_time = Clock::now();
-					wood_sort2(&in);
+					wood_sort2(in);
 					Co();
 					stop_time = Clock::now();
 					cout << r << " Shaker " <<
@@ -431,7 +460,7 @@ int main()
 					r = 0;
 					start_time = Clock::now();
 
-					wood_sort1(&in);
+					wood_sort1(in);
 					Co();
 					stop_time = Clock::now();
 					cout << r << " Bubble min " <<
@@ -446,7 +475,7 @@ int main()
 					in[j] = (rand() % maxm);
 				r = 0;
 				start_time = Clock::now();
-				Vsort(&in, n);
+				Vsort(in, n);
 				Co();
 				stop_time = Clock::now();
 				cout << r << " Vsort " <<
@@ -460,7 +489,7 @@ int main()
 					in[j] = (rand() % maxm);
 				r = 0;
 				start_time = Clock::now();
-				Bsort(&in);
+				Bsort(in);
 				Co();
 				stop_time = Clock::now();
 				cout << r << " Binary " <<
@@ -476,7 +505,7 @@ int main()
 					in[j] = (rand() % maxm);
 				r = 0;
 				start_time = Clock::now();
-				Shsort(&in, k);
+				Shsort(in, k);
 				Co();
 				stop_time = Clock::now();
 				cout << r << " Shell " <<
